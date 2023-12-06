@@ -15,6 +15,7 @@ jobs:
     - name: run tests
       run: npm test
   deploy:
+    needs: [test]
     runs-on: ubuntu-latest
     steps:
       - name: get code
@@ -24,6 +25,6 @@ jobs:
         with:
           node-version: 18
       - name: build project
-        run: npm build
+        run: npm run build
       - name: deploying
         run: echo "the project is being deployed"
