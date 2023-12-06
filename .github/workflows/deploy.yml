@@ -24,6 +24,6 @@ jobs:
         with:
           node-version: 18
       - name: build project
-        run: npm run build
+        run: npm build
       - name: deploying
         run: echo "the project is being deployed"
