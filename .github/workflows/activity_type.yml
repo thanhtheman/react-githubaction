@@ -3,6 +3,16 @@ on:
     pull_request:
         types:
             - opened
+        branches: # same logic can be applied to pull request as well
+            - main
+            - 'activity_*'
+            - 'activity_**'
+    workflow_dispatch:
+    push:
+        branches:
+            - main # this one will target any push to the main branch
+            - 'activity_*' # this one will target any push to a branch that starts with 'activity-' such as activity_type_pullrequest, but not activity_type_pullrequest/feature
+            - 'activity_**' # this one will target any push to activity_something/something
 jobs:
     testing:
         runs-on: ubuntu-latest
