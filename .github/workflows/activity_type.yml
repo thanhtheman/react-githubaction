@@ -1,0 +1,13 @@
+name: activity type example
+on:
+    pull_request:
+        types:
+            - opened
+jobs:
+    testing:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - run: npm ci
+            - run: npm test
+            - run: echo "The workflow was triggered by a pull request"
