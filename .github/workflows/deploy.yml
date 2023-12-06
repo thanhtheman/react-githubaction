@@ -1,32 +1,32 @@
-name: Deploy Project
+name: test and deploy
 on: push
 jobs:
-  test:
+  testing:
     runs-on: ubuntu-latest
     steps:
-    - name: get code
-      uses: actions/checkout@v3
-    - name: install nodes
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
-    - name: install dependencies
-      run: npm install
-    - name: run tests
-      run: npm test
-  deploy:
-    needs: [test]
-    runs-on: ubuntu-latest
-    steps:
-      - name: get code
+      - name: loading code
         uses: actions/checkout@v3
-      - name: install nodes
+      - name: install NodeJS
         uses: actions/setup-node@v3
         with:
           node-version: 18
       - name: install dependencies
+        run: npm install
+      - name: running test
+        run: npm test
+  deployment:
+    needs: [testing]
+    runs-on: ubuntu-latest
+    steps:
+      - name: loading code
+        uses: actions/checkout@v3
+      - name: install NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: isntall dependencies
         run: npm ci
       - name: build project
         run: npm run build
-      - name: deploying
-        run: echo "the project is being deployed"
+      - name: deploy to digital ocean
+        run: echo "the project is being deployed..."
