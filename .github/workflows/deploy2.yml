@@ -27,4 +27,10 @@ jobs:
         needs: build
         runs-on: ubuntu-latest
         steps:
+            - name: download artifact from github server
+              uses: actions/download-artifact@v3
+              with:
+                name: dist-files #make sure it is the same name as when you upload the artifact
+            - name: output contents
+              run: ls
             - run: echo "Deploying...."
