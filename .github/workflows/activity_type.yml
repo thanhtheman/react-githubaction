@@ -1,8 +1,22 @@
-name: activity type example
+name: activity type and filter example
 on:
     pull_request:
         types:
             - opened
+        branches: # same logic can be applied to pull request as well
+            - main
+            - 'activity_*'
+            - 'activity_**'
+    workflow_dispatch:
+    # push:
+    #     branches:
+    #         - main # this one will target any push to the main branch
+    #         - 'activity_*' # this one will target any push to a branch that starts with 'activity-' such as activity_type_pullrequest, but not activity_type_pullrequest/feature
+    #         - 'activity_**' # this one will target any push to activity_something/something
+    #     paths-ignore: # any changes from this path will not trigger the workflow
+    #         - '.github/workflows/*'
+    #     # paths: # any changes from this path will trigger the workflow
+    #     #     - 'src/App.jsx'
 jobs:
     testing:
         runs-on: ubuntu-latest

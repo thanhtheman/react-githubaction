@@ -1,0 +1,44 @@
+name: Deploy website
+on: workflow_dispatch
+    # push:
+    #     branches:
+    #         - main
+    #         - 'activity_*'
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - run: npm ci
+            - run: npm run test
+    build:
+        needs: test
+        runs-on: ubuntu-latest
+        outputs:
+          script-file: ${{ steps.publish.outputs.script-file }} #create the variable, steps is the special object of Github Actions that connects to the steps we run
+        steps:
+            - uses: actions/checkout@v3
+            - run: npm ci
+            - run: npm run build
+            - name: publish
+              id: publish #specifying the ide so we can connect it with the above variable setup
+              run: find dist/assets/*.js -type f -execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';'
+              # save the file name to the variable created in the previous step
+            - name: upload artifact
+              uses: actions/upload-artifact@v3
+              with:
+                name: dist-files
+                path: dist
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - name: download artifact from github server
+              uses: actions/download-artifact@v3
+              with:
+                name: dist-files #make sure it is the same name as when you upload the artifact
+            - name: output contents
+              run: ls
+            - name: print file name
+              run: echo ${{ needs.build.outputs.script-file }} #needs is the special object of Github Actions that connects to the jobs we already run "build"
+            - run: echo "Deploying...."
