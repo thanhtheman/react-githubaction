@@ -14,7 +14,7 @@ jobs:
             - name: caching dependencies
               uses: actions/cache@v3
               with:
-                path: ~/.npm
+                path: ~/.npm # this is the unique path for node, it is different for python, java, etc
                 key: dep-node-modules-${{ hashFiles('**/package-lock.json') }}
                 # this is the hash of package-lock.json file which has all the dependencies
             - run: npm ci
