@@ -1,9 +1,9 @@
 name: Deploy website
-on: 
-    push:
-        branches:
-            - main
-            - 'activity_*'
+on: workflow_dispatch
+    # push:
+    #     branches:
+    #         - main
+    #         - 'activity_*'
 jobs:
     test:
         runs-on: ubuntu-latest

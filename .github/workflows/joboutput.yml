@@ -1,0 +1,41 @@
+name: job output
+on: 
+    push:
+        branches:
+            - main
+            - "activity_*"
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - run: npm ci
+            - run: npm run test
+    build:
+        needs: test
+        runs-on: ubuntu-latest
+        outputs:
+            file-name: ${{ steps.creating_file_name.outputs.file-name }}
+        steps:
+            - uses: actions/checkout@v3
+            - run: npm ci
+            - run: npm run build
+            - name: create the variable
+              id: creating_file_name
+              run: find dist/assets/*.js -type f -execdir echo "file-name={}" >> $GITHUB_OUTPUT ";"
+            - name: upload artifact
+              uses: actions/upload-artifact@v3
+              with:
+                  name: dist-file
+                  path: dist
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: download artifact
+              uses: actions/download-artifact@v2
+              with:
+                  name: dist-file
+            - run: echo ${{ needs.build.outputs.file-name }}
+            - run: echo "Deploying..."
