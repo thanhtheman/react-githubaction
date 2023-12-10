@@ -1,4 +1,4 @@
-name: job output
+name: job output & caching
 on:
     push:
         branches:
@@ -11,7 +11,14 @@ jobs:
             - uses: actions/setup-node@v3
               with:
                   node-version: 18
+            - name: caching dependencies
+              uses: actions/cache@v3
+              with:
+                path: ~/.npm
+                key: dep-node-modules-${{ hashFiles('**/package-lock.json') }}
+                # this is the hash of package-lock.json file which has all the dependencies
             - run: npm ci
+            # we still needs this command as if the cache is not up to date, it will install the dependencies
             - run: npm run test
     build:
         needs: test
@@ -23,6 +30,10 @@ jobs:
             - uses: actions/setup-node@v3
               with:
                   node-version: 18
+            - uses: actions/cache@v3
+              with:
+                path: ~/.npm
+                key: dep-node-modules-${{ hashFiles('**/package-lock.json') }}
             - run: npm ci
             - run: npm run build
             - name: creating the file name
@@ -34,4 +45,11 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - run: echo "this is the file name ${{ needs.build.outputs.file-name }}"
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+            - uses: actions/cache@v3
+              with:
+                path: ~/.npm
+                key: dep-node-modules-${{ hashFiles('**/package-lock.json') }}
             - run: echo "Deploying..."
